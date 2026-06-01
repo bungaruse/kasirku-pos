@@ -248,6 +248,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="hdr" id="header">
 <div><h1>🏪 KasirKu</h1><div class="inf" id="hi">Loading...</div></div>
 <div class="acts">
+<button class="bi" onclick="showShiftModal()" id="shiftBtn" style="background:rgba(255,255,255,.3)">👤</button>
 <button class="bi" onclick="showDashboard()">📊</button>
 <button class="bi" onclick="showReport()">📈</button>
 <button class="bi" onclick="showMenuEditor()">✏️</button>
@@ -256,9 +257,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <!-- SHIFT BAR -->
-<div class="shift-bar" id="shiftBar" style="display:none">
-<span>👤 <span id="shiftName">Kasir</span> • Shift dimulai <span id="shiftStart">-</span></span>
-<span class="end" onclick="endShift()">🔴 Akhiri Shift</span>
+<div class="shift-bar" id="shiftBar">
+<span id="shiftInfo">👤 <a onclick="showShiftModal()" style="color:var(--p);font-weight:800;cursor:pointer;text-decoration:underline">Login Kasir</a> untuk mulai shift</span>
 </div>
 
 <!-- TABS -->
@@ -487,7 +487,7 @@ ldData();uDate();rMenu();rCart();rCats();uCt();
 setTimeout(()=>document.getElementById('splash').classList.add('hide'),1200);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 if(cfg.dark){document.documentElement.setAttribute('data-theme','dark');document.getElementById('dmSw').classList.add('on');}
-if(shift)showShiftBar();
+showShiftBar();
 let ty=0;const s=document.getElementById('cs');
 s.addEventListener('touchstart',e=>ty=e.touches[0].clientY);
 s.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-ty>60&&cExp)tCart(false);});
@@ -508,9 +508,10 @@ function uDate(){document.getElementById('hi').textContent=cfg.warung+' • '+ne
 function toggleDark(){cfg.dark=!cfg.dark;document.documentElement.setAttribute('data-theme',cfg.dark?'dark':'');document.getElementById('dmSw').classList.toggle('on',cfg.dark);svData();}
 
 // ====== SHIFT ======
-function showShiftBar(){document.getElementById('shiftBar').style.display='flex';document.getElementById('shiftName').textContent=shift.name;document.getElementById('shiftStart').textContent=new Date(shift.start).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+function showShiftModal(){document.getElementById('shmo').classList.add('show');}
+function showShiftBar(){if(shift){document.getElementById('shiftInfo').innerHTML=`👤 <strong>${shift.name}</strong> • ${new Date(shift.start).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})} • <span class="end" onclick="endShift()" style="color:var(--ac);cursor:pointer;font-weight:700">🔴 Akhiri</span>`;}else{document.getElementById('shiftInfo').innerHTML='👤 <a onclick="showShiftModal()" style="color:var(--p);font-weight:800;cursor:pointer;text-decoration:underline">Login Kasir</a> untuk mulai shift';}}
 function startShift(){const name=document.getElementById('shName').value.trim();const pin=document.getElementById('shPin').value;if(!name){tst('❌ Nama wajib!');return;}shift={name,start:new Date().toISOString(),pin};svData();showShiftBar();cMod('shmo');tst(`✅ Shift ${name} dimulai`);}
-function endShift(){if(!confirm('Akhiri shift ini?'))return;shift=null;svData();document.getElementById('shiftBar').style.display='none';tst('✅ Shift diakhiri');}
+function endShift(){if(!confirm('Akhiri shift ini?'))return;shift=null;svData();showShiftBar();tst('✅ Shift diakhiri');}
 
 // ====== CATEGORIES ======
 function rCats(){document.getElementById('cp').innerHTML=['Semua','⭐ Favorit',...new Set(menu.map(m=>m.cat))].map(c=>`<div class="${cFilter===c?'active':''}" onclick="fCat('${c}')">${c}</div>`).join('');}
