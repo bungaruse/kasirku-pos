@@ -2,143 +2,162 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KasirKu - POS Warung & Restoran</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e40af">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KasirKu">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>KasirKu - POS Warung</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #333; overscroll-behavior: none; }
         
         /* Header */
-        .header { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .header h1 { font-size: 18px; }
         .header .info { font-size: 11px; opacity: 0.9; }
-        .header .btn-report { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .header .btn-icon { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
         
         /* Tabs */
-        .tabs { display: flex; background: white; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
-        .tab { padding: 10px 16px; font-size: 13px; font-weight: 500; color: #6b7280; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
-        .tab.active { color: #1e40af; border-bottom-color: #1e40af; }
+        .tabs { display: flex; background: white; border-bottom: 1px solid #e5e7eb; position: sticky; top: 48px; z-index: 99; }
+        .tab { flex: 1; padding: 12px; font-size: 13px; font-weight: 500; color: #6b7280; cursor: pointer; text-align: center; border-bottom: 2px solid transparent; }
+        .tab.active { color: #1e40af; border-bottom-color: #1e40af; background: #eff6ff; }
         
         /* Order Type */
-        .order-type { display: flex; gap: 8px; padding: 12px 15px; background: white; border-bottom: 1px solid #e5e7eb; }
-        .type-btn { flex: 1; padding: 8px; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 13px; cursor: pointer; background: white; }
+        .order-type { display: flex; gap: 6px; padding: 10px 12px; background: white; border-bottom: 1px solid #e5e7eb; }
+        .type-btn { flex: 1; padding: 8px 4px; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 12px; cursor: pointer; background: white; }
         .type-btn.active { border-color: #1e40af; background: #eff6ff; color: #1e40af; font-weight: 600; }
         
-        /* Main Layout */
-        .main { display: flex; height: calc(100vh - 120px); }
-        
         /* Menu Panel */
-        .menu-panel { flex: 1; overflow-y: auto; padding: 10px; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-        .menu-item { background: white; border-radius: 10px; padding: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s; }
-        .menu-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .menu-item .emoji { font-size: 28px; text-align: center; }
-        .menu-item .name { font-size: 12px; font-weight: 600; margin-top: 5px; text-align: center; }
-        .menu-item .price { font-size: 11px; color: #1e40af; font-weight: bold; text-align: center; margin-top: 3px; }
-        .menu-item .stock { font-size: 10px; color: #9ca3af; text-align: center; }
+        .menu-panel { padding: 10px; padding-bottom: 80px; }
+        .category-header { font-size: 14px; font-weight: 700; color: #374151; padding: 8px 4px 6px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+        .menu-item { background: white; border-radius: 12px; padding: 10px 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.15s; text-align: center; }
+        .menu-item:active { transform: scale(0.95); background: #f0f7ff; }
+        .menu-item .emoji { font-size: 32px; }
+        .menu-item .name { font-size: 11px; font-weight: 600; margin-top: 4px; line-height: 1.2; }
+        .menu-item .price { font-size: 11px; color: #1e40af; font-weight: bold; margin-top: 2px; }
         
-        /* Cart Panel */
-        .cart-panel { width: 300px; background: white; border-left: 1px solid #e5e7eb; display: flex; flex-direction: column; }
-        .cart-header { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
-        .cart-header h3 { font-size: 14px; }
-        .cart-header .clear { color: #ef4444; font-size: 12px; cursor: pointer; border: none; background: none; }
-        .cart-items { flex: 1; overflow-y: auto; padding: 10px; }
-        .cart-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+        /* Cart Bottom Sheet */
+        .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 200; transition: transform 0.3s ease; max-height: 70vh; }
+        .cart-sheet.minimized { transform: translateY(calc(100% - 70px)); }
+        .cart-sheet.expanded { transform: translateY(0); }
+        .cart-handle { width: 36px; height: 4px; background: #d1d5db; border-radius: 2px; margin: 8px auto; }
+        .cart-summary { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px 12px; }
+        .cart-summary .left { display: flex; align-items: center; gap: 10px; }
+        .cart-summary .badge { background: #ef4444; color: white; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 700; min-width: 20px; text-align: center; }
+        .cart-summary .total { font-size: 18px; font-weight: 700; color: #1e40af; }
+        .btn-pay { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .btn-pay:disabled { background: #9ca3af; }
+        
+        /* Cart Expanded */
+        .cart-expanded { display: none; padding: 0 16px 16px; max-height: 50vh; overflow-y: auto; }
+        .cart-sheet.expanded .cart-expanded { display: block; }
+        .cart-sheet.expanded .cart-summary { padding-bottom: 8px; }
+        .cart-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
         .cart-item .info { flex: 1; }
-        .cart-item .info .name { font-size: 13px; font-weight: 500; }
-        .cart-item .info .price { font-size: 11px; color: #6b7280; }
+        .cart-item .name { font-size: 13px; font-weight: 500; }
+        .cart-item .price { font-size: 11px; color: #6b7280; }
         .cart-item .qty { display: flex; align-items: center; gap: 8px; }
-        .cart-item .qty button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #d1d5db; background: white; cursor: pointer; font-size: 14px; }
-        .cart-item .qty span { font-size: 13px; font-weight: 600; min-width: 20px; text-align: center; }
-        .cart-item .subtotal { font-size: 13px; font-weight: 600; color: #1e40af; min-width: 70px; text-align: right; }
-        .cart-empty { text-align: center; padding: 40px 20px; color: #9ca3af; }
-        .cart-empty .icon { font-size: 40px; }
-        .cart-empty p { font-size: 13px; margin-top: 10px; }
+        .cart-item .qty button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #d1d5db; background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+        .cart-item .qty button:active { background: #f3f4f6; }
+        .cart-item .qty span { font-size: 14px; font-weight: 600; min-width: 24px; text-align: center; }
+        .cart-item .subtotal { font-size: 13px; font-weight: 600; color: #1e40af; min-width: 65px; text-align: right; }
+        .cart-empty-msg { text-align: center; padding: 20px; color: #9ca3af; font-size: 13px; }
         
-        /* Cart Footer */
-        .cart-footer { border-top: 1px solid #e5e7eb; padding: 12px 15px; }
-        .cart-total { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .cart-total .label { font-size: 14px; font-weight: 500; }
-        .cart-total .amount { font-size: 18px; font-weight: bold; color: #1e40af; }
-        .cart-total .items { font-size: 11px; color: #9ca3af; }
-        .btn-pay { width: 100%; padding: 12px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; }
-        .btn-pay:hover { opacity: 0.9; }
-        .btn-pay:disabled { background: #9ca3af; cursor: not-allowed; }
-        
-        /* Order Notes */
-        .order-notes { padding: 8px 15px; border-top: 1px solid #e5e7eb; }
-        .order-notes input { width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; }
-        
-        /* Table Select */
-        .table-select { padding: 8px 15px; border-top: 1px solid #e5e7eb; display: flex; gap: 8px; align-items: center; }
-        .table-select label { font-size: 12px; color: #6b7280; }
-        .table-select input { width: 60px; padding: 6px; border: 1px solid #e5e7eb; border-radius: 6px; text-align: center; font-size: 13px; }
-        
-        /* Payment Modal */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; }
-        .modal-overlay.show { display: flex; }
-        .modal { background: white; border-radius: 16px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
-        .modal-header { padding: 15px 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { font-size: 16px; }
-        .modal-header .close { background: none; border: none; font-size: 20px; cursor: pointer; color: #6b7280; }
-        .modal-body { padding: 20px; }
-        
-        /* Payment */
-        .pay-summary { background: #f9fafb; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
-        .pay-row { display: flex; justify-content: space-between; margin: 5px 0; font-size: 13px; }
-        .pay-row.total { font-size: 18px; font-weight: bold; color: #1e40af; border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 10px; }
-        .pay-input { margin: 15px 0; }
-        .pay-input label { display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px; }
-        .pay-input input { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 18px; font-weight: bold; text-align: right; }
-        .pay-input input:focus { outline: none; border-color: #1e40af; }
-        .pay-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
-        .pay-quick button { padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer; font-size: 12px; }
-        .pay-quick button:hover { background: #f3f4f6; }
-        .pay-change { background: #f0fdf4; border-radius: 10px; padding: 12px; margin: 15px 0; text-align: center; }
-        .pay-change .label { font-size: 12px; color: #16a34a; }
-        .pay-change .amount { font-size: 24px; font-weight: bold; color: #16a34a; }
-        .btn-confirm { width: 100%; padding: 14px; background: #16a34a; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-confirm:hover { background: #15803d; }
+        /* Quick note & table */
+        .cart-options { display: flex; gap: 8px; padding: 8px 16px; }
+        .cart-options input { flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; }
         
         /* Orders Panel */
-        .orders-panel { display: none; flex: 1; overflow-y: auto; padding: 10px; }
+        .orders-panel { display: none; padding: 10px; padding-bottom: 80px; }
         .orders-panel.show { display: block; }
-        .order-card { background: white; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .order-card { background: white; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .order-id { font-weight: 600; font-size: 14px; }
         .order-badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
         .badge-pending { background: #fef3c7; color: #d97706; }
         .badge-ready { background: #dcfce7; color: #16a34a; }
         .badge-done { background: #e0e7ff; color: #4f46e5; }
         .order-info { font-size: 12px; color: #6b7280; }
-        .order-items { font-size: 12px; margin: 5px 0; }
+        .order-items { font-size: 12px; margin: 4px 0; }
         .order-total { font-size: 14px; font-weight: bold; color: #1e40af; }
-        .order-actions { display: flex; gap: 8px; margin-top: 8px; }
-        .order-actions button { flex: 1; padding: 6px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .order-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .order-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-ready { background: #16a34a; color: white; }
         .btn-done { background: #4f46e5; color: white; }
         .btn-cancel { background: #ef4444; color: white; }
         
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: flex-end; z-index: 300; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: white; border-radius: 16px 16px 0 0; width: 100%; max-height: 85vh; overflow-y: auto; padding-bottom: env(safe-area-inset-bottom, 16px); }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; border-radius: 16px 16px 0 0; }
+        .modal-header h3 { font-size: 16px; }
+        .modal-header .close { background: #f3f4f6; border: none; font-size: 18px; cursor: pointer; color: #6b7280; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .modal-body { padding: 16px 20px; }
+        
+        /* Payment */
+        .pay-summary { background: #f9fafb; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+        .pay-row { display: flex; justify-content: space-between; margin: 4px 0; font-size: 13px; }
+        .pay-row.total { font-size: 20px; font-weight: bold; color: #1e40af; border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 10px; }
+        .pay-input { margin: 14px 0; }
+        .pay-input label { display: block; font-size: 13px; color: #6b7280; margin-bottom: 6px; }
+        .pay-input input { width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 22px; font-weight: bold; text-align: right; }
+        .pay-input input:focus { outline: none; border-color: #1e40af; }
+        .pay-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+        .pay-quick button { padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; background: white; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .pay-quick button:active { background: #f3f4f6; }
+        .pay-change { background: #f0fdf4; border-radius: 12px; padding: 14px; margin: 14px 0; text-align: center; }
+        .pay-change .label { font-size: 12px; color: #16a34a; }
+        .pay-change .amount { font-size: 28px; font-weight: bold; color: #16a34a; }
+        .btn-confirm { width: 100%; padding: 16px; background: #16a34a; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-confirm:active { background: #15803d; }
+        
         /* Report Modal */
-        .report-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .stat-card { background: #f9fafb; border-radius: 10px; padding: 12px; text-align: center; }
+        .report-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+        .stat-card { background: #f9fafb; border-radius: 12px; padding: 14px; text-align: center; }
         .stat-card .label { font-size: 11px; color: #6b7280; }
-        .stat-card .value { font-size: 18px; font-weight: bold; margin-top: 5px; }
+        .stat-card .value { font-size: 20px; font-weight: bold; margin-top: 4px; }
         .stat-card.income .value { color: #16a34a; }
         .stat-card.orders .value { color: #1e40af; }
         .stat-card.items .value { color: #d97706; }
         
-        /* Toast */
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 10px; font-size: 13px; display: none; z-index: 300; }
+        /* Settings Modal */
+        .settings-group { margin-bottom: 16px; }
+        .settings-group label { display: block; font-size: 13px; color: #6b7280; margin-bottom: 6px; font-weight: 500; }
+        .settings-group input, .settings-group select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; }
+        .settings-group input:focus, .settings-group select:focus { outline: none; border-color: #1e40af; }
+        .btn-save { width: 100%; padding: 14px; background: #1e40af; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
         
-        /* Mobile */
-        @media (max-width: 768px) {
-            .main { flex-direction: column; height: auto; }
-            .cart-panel { width: 100%; border-left: none; border-top: 1px solid #e5e7eb; }
-            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-            .menu-item { padding: 8px; }
-            .menu-item .emoji { font-size: 24px; }
-            .menu-item .name { font-size: 11px; }
+        /* Toast */
+        .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 12px; font-size: 13px; display: none; z-index: 400; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        
+        /* Receipt */
+        .receipt { background: white; border: 1px dashed #d1d5db; border-radius: 8px; padding: 16px; margin: 10px 0; font-family: 'Courier New', monospace; font-size: 12px; }
+        .receipt .r-header { text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+        .receipt .r-line { display: flex; justify-content: space-between; margin: 2px 0; }
+        .receipt .r-divider { border-top: 1px dashed #d1d5db; margin: 8px 0; }
+        .receipt .r-total { font-weight: bold; font-size: 14px; }
+        .receipt .r-footer { text-align: center; margin-top: 8px; color: #6b7280; font-size: 11px; }
+        
+        /* Dark overlay for cart tap */
+        .cart-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 199; display: none; }
+        .cart-overlay.show { display: block; }
+        
+        /* Safe area padding */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .cart-sheet { padding-bottom: env(safe-area-inset-bottom); }
+        }
+        
+        /* Desktop wider grid */
+        @media (min-width: 500px) {
+            .menu-grid { grid-template-columns: repeat(4, 1fr); }
+            .modal { max-width: 420px; margin: 0 auto; border-radius: 16px; margin-bottom: 20px; }
+            .modal-overlay { align-items: center; }
         }
     </style>
 </head>
@@ -147,67 +166,64 @@
     <div class="header">
         <div>
             <h1>🏪 KasirKu</h1>
-            <div class="info" id="headerInfo">1 Juni 2026 • Warung</div>
+            <div class="info" id="headerInfo">Loading...</div>
         </div>
-        <button class="btn-report" onclick="showReport()">📊 Laporan</button>
+        <div style="display:flex;gap:8px">
+            <button class="btn-icon" onclick="showReport()">📊</button>
+            <button class="btn-icon" onclick="showSettings()">⚙️</button>
+        </div>
     </div>
     
     <!-- Tabs -->
     <div class="tabs">
-        <div class="tab active" onclick="showPanel('menu')">🍽️ Menu</div>
-        <div class="tab" onclick="showPanel('orders')">📋 Pesanan <span id="orderCount">0</span></div>
+        <div class="tab active" onclick="showPanel('menu', this)">🍽️ Menu</div>
+        <div class="tab" onclick="showPanel('orders', this)">📋 Pesanan <span id="orderCount">0</span></div>
     </div>
     
     <!-- Order Type -->
     <div class="order-type">
-        <div class="type-btn active" onclick="setOrderType('dine_in')">🪑 Dine In</div>
-        <div class="type-btn" onclick="setOrderType('take_away')">📦 Take Away</div>
-        <div class="type-btn" onclick="setOrderType('delivery')">🛵 Delivery</div>
+        <div class="type-btn active" onclick="setOrderType('dine_in', this)">🪑 Dine In</div>
+        <div class="type-btn" onclick="setOrderType('take_away', this)">📦 Bungkus</div>
+        <div class="type-btn" onclick="setOrderType('delivery', this)">🛵 Delivery</div>
     </div>
     
-    <!-- Main Content -->
-    <div class="main">
-        <!-- Menu Panel -->
-        <div class="menu-panel" id="menuPanel">
-            <div class="menu-grid" id="menuGrid"></div>
+    <!-- Menu Panel -->
+    <div class="menu-panel" id="menuPanel"></div>
+    
+    <!-- Orders Panel -->
+    <div class="orders-panel" id="ordersPanel"></div>
+    
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart(false)"></div>
+    
+    <!-- Cart Bottom Sheet -->
+    <div class="cart-sheet minimized" id="cartSheet">
+        <div class="cart-handle" onclick="toggleCart()"></div>
+        <div class="cart-summary" onclick="toggleCart()">
+            <div class="left">
+                <span style="font-size:20px">🛒</span>
+                <span class="badge" id="cartBadge">0</span>
+                <span style="font-size:13px;color:#6b7280" id="cartLabel">Keranjang kosong</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+                <span class="total" id="cartTotal">Rp 0</span>
+                <button class="btn-pay" id="btnPay" onclick="event.stopPropagation();showPayment()" disabled>Bayar</button>
+            </div>
         </div>
         
-        <!-- Orders Panel -->
-        <div class="orders-panel" id="ordersPanel"></div>
+        <!-- Cart Options (table + note) -->
+        <div class="cart-options" id="cartOptions" style="display:none">
+            <input type="number" id="tableNum" placeholder="Meja #" min="1" max="99">
+            <input type="text" id="orderNote" placeholder="Catatan (pedas, tanpa es, dll)">
+        </div>
         
-        <!-- Cart Panel -->
-        <div class="cart-panel">
-            <div class="cart-header">
-                <h3>🛒 Keranjang</h3>
-                <button class="clear" onclick="clearCart()">🗑️ Hapus</button>
+        <!-- Cart Items -->
+        <div class="cart-expanded" id="cartExpanded">
+            <div id="cartItems">
+                <div class="cart-empty-msg">🛒 Keranjang kosong</div>
             </div>
-            
-            <!-- Table Number -->
-            <div class="table-select">
-                <label>Meja:</label>
-                <input type="number" id="tableNum" placeholder="-" min="1" max="99">
-                <label>Catatan:</label>
-                <input type="text" id="orderNote" placeholder="Contoh: Pedas, Tanpa es" style="flex:1">
-            </div>
-            
-            <!-- Cart Items -->
-            <div class="cart-items" id="cartItems">
-                <div class="cart-empty">
-                    <div class="icon">🛒</div>
-                    <p>Keranjang kosong</p>
-                </div>
-            </div>
-            
-            <!-- Cart Footer -->
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <div>
-                        <div class="label">Total</div>
-                        <div class="items" id="itemCount">0 item</div>
-                    </div>
-                    <div class="amount" id="cartTotal">Rp 0</div>
-                </div>
-                <button class="btn-pay" id="btnPay" onclick="showPayment()" disabled>💰 Bayar</button>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #e5e7eb;margin-top:8px">
+                <button onclick="clearCart()" style="background:none;border:none;color:#ef4444;font-size:13px;cursor:pointer">🗑️ Hapus Semua</button>
             </div>
         </div>
     </div>
@@ -231,7 +247,7 @@
                     <button onclick="setPay(20000)">Rp 20rb</button>
                     <button onclick="setPay(50000)">Rp 50rb</button>
                     <button onclick="setPay(100000)">Rp 100rb</button>
-                    <button onclick="setPayExact()">Uang Pas</button>
+                    <button onclick="setPayExact()">💰 Uang Pas</button>
                     <button onclick="setPay(150000)">Rp 150rb</button>
                     <button onclick="setPay(200000)">Rp 200rb</button>
                 </div>
@@ -246,6 +262,20 @@
         </div>
     </div>
     
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🧾 Struk</h3>
+                <button class="close" onclick="closeModal('receiptModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="receiptContent"></div>
+                <button class="btn-save" onclick="closeModal('receiptModal')" style="margin-top:12px;background:#6b7280">Tutup</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Report Modal -->
     <div class="modal-overlay" id="reportModal">
         <div class="modal">
@@ -255,8 +285,37 @@
             </div>
             <div class="modal-body">
                 <div class="report-stats" id="reportStats"></div>
-                <h4 style="font-size:14px;margin:15px 0 10px">📋 Transaksi Terakhir</h4>
+                <h4 style="font-size:14px;margin:14px 0 8px">📋 Transaksi Terakhir</h4>
                 <div id="reportOrders"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>⚙️ Pengaturan</h3>
+                <button class="close" onclick="closeModal('settingsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label>Nama Warung</label>
+                    <input type="text" id="setWarung" placeholder="Warung Mak Jago">
+                </div>
+                <div class="settings-group">
+                    <label>Alamat</label>
+                    <input type="text" id="setAlamat" placeholder="Jl. Contoh No. 123">
+                </div>
+                <div class="settings-group">
+                    <label>No. HP (WhatsApp)</label>
+                    <input type="tel" id="setPhone" placeholder="08xxxxxxxxxx">
+                </div>
+                <div class="settings-group">
+                    <label>Pajak (%)</label>
+                    <input type="number" id="setTax" placeholder="0" min="0" max="30" value="0">
+                </div>
+                <button class="btn-save" onclick="saveSettings()">💾 Simpan</button>
             </div>
         </div>
     </div>
@@ -266,213 +325,290 @@
     
     <script>
         // ============================================
-        // KONFIGURASI
+        // KONFIGURASI & DATA
         // ============================================
-        const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+        const STORE_KEY = 'kasirku_data';
         
-        // Menu data (bisa dari Google Sheets juga)
-        const MENU_DATA = [
-            // Makanan
-            { id: 1, name: 'Nasi Goreng', emoji: '🍚', price: 15000, category: 'Makanan', stock: 99 },
-            { id: 2, name: 'Mie Ayam', emoji: '🍜', price: 13000, category: 'Makanan', stock: 99 },
-            { id: 3, name: 'Bakso', emoji: '🧆', price: 12000, category: 'Makanan', stock: 99 },
-            { id: 4, name: 'Soto Ayam', emoji: '🍲', price: 14000, category: 'Makanan', stock: 99 },
-            { id: 5, name: 'Nasi Campur', emoji: '🍱', price: 18000, category: 'Makanan', stock: 99 },
-            { id: 6, name: 'Ayam Geprek', emoji: '🍗', price: 16000, category: 'Makanan', stock: 99 },
-            { id: 7, name: 'Gado-gado', emoji: '🥗', price: 12000, category: 'Makanan', stock: 99 },
-            { id: 8, name: 'Sate Ayam', emoji: '🍢', price: 15000, category: 'Makanan', stock: 99 },
-            // Minuman
-            { id: 9, name: 'Es Teh', emoji: '🧊', price: 5000, category: 'Minuman', stock: 99 },
-            { id: 10, name: 'Es Jeruk', emoji: '🍊', price: 6000, category: 'Minuman', stock: 99 },
-            { id: 11, name: 'Kopi Hitam', emoji: '☕', price: 8000, category: 'Minuman', stock: 99 },
-            { id: 12, name: 'Kopi Susu', emoji: '🥛', price: 10000, category: 'Minuman', stock: 99 },
-            { id: 13, name: 'Air Mineral', emoji: '💧', price: 3000, category: 'Minuman', stock: 99 },
-            { id: 14, name: 'Jus Alpukat', emoji: '🥑', price: 12000, category: 'Minuman', stock: 99 },
-            // Snack
-            { id: 15, name: 'Roti Bakar', emoji: '🍞', price: 8000, category: 'Snack', stock: 99 },
-            { id: 16, name: 'Pisang Goreng', emoji: '🍌', price: 5000, category: 'Snack', stock: 99 },
-            { id: 17, name: 'Martabak Mini', emoji: '🥞', price: 10000, category: 'Snack', stock: 99 },
-            { id: 18, name: 'Tahu Crispy', emoji: '🧈', price: 7000, category: 'Snack', stock: 99 },
+        let config = {
+            warung: 'Warung',
+            alamat: '',
+            phone: '',
+            tax: 0
+        };
+        
+        let menuData = [
+            { id: 1, name: 'Nasi Goreng', emoji: '🍚', price: 15000, cat: 'Makanan' },
+            { id: 2, name: 'Mie Ayam', emoji: '🍜', price: 13000, cat: 'Makanan' },
+            { id: 3, name: 'Bakso', emoji: '🧆', price: 12000, cat: 'Makanan' },
+            { id: 4, name: 'Soto Ayam', emoji: '🍲', price: 14000, cat: 'Makanan' },
+            { id: 5, name: 'Nasi Campur', emoji: '🍱', price: 18000, cat: 'Makanan' },
+            { id: 6, name: 'Ayam Geprek', emoji: '🍗', price: 16000, cat: 'Makanan' },
+            { id: 7, name: 'Gado-gado', emoji: '🥗', price: 12000, cat: 'Makanan' },
+            { id: 8, name: 'Sate Ayam', emoji: '🍢', price: 15000, cat: 'Makanan' },
+            { id: 9, name: 'Nasi Telur', emoji: '🍳', price: 10000, cat: 'Makanan' },
+            { id: 10, name: 'Es Teh', emoji: '🧊', price: 5000, cat: 'Minuman' },
+            { id: 11, name: 'Es Jeruk', emoji: '🍊', price: 6000, cat: 'Minuman' },
+            { id: 12, name: 'Kopi Hitam', emoji: '☕', price: 8000, cat: 'Minuman' },
+            { id: 13, name: 'Kopi Susu', emoji: '🥛', price: 10000, cat: 'Minuman' },
+            { id: 14, name: 'Air Mineral', emoji: '💧', price: 3000, cat: 'Minuman' },
+            { id: 15, name: 'Jus Alpukat', emoji: '🥑', price: 12000, cat: 'Minuman' },
+            { id: 16, name: 'Roti Bakar', emoji: '🍞', price: 8000, cat: 'Snack' },
+            { id: 17, name: 'Pisang Goreng', emoji: '🍌', price: 5000, cat: 'Snack' },
+            { id: 18, name: 'Martabak Mini', emoji: '🥞', price: 10000, cat: 'Snack' },
+            { id: 19, name: 'Tahu Crispy', emoji: '🧈', price: 7000, cat: 'Snack' },
+            { id: 20, name: 'Tempe Mendoan', emoji: '🫘', price: 5000, cat: 'Snack' },
         ];
         
-        // State
         let cart = [];
         let orders = [];
         let orderType = 'dine_in';
         let orderCounter = 1;
-        let currentFilter = 'Semua';
+        let cartExpanded = false;
         
-        // Init
+        // ============================================
+        // INIT
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            loadData();
             updateHeaderDate();
             renderMenu();
-            loadOrders();
+            renderCart();
+            updateOrderCount();
+            
+            // Register SW
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(e => console.log('SW fail:', e));
+            }
         });
         
-        // Update header date
+        // ============================================
+        // DATA PERSISTENCE
+        // ============================================
+        function loadData() {
+            try {
+                const d = JSON.parse(localStorage.getItem(STORE_KEY));
+                if (d) {
+                    if (d.config) config = { ...config, ...d.config };
+                    if (d.menu) menuData = d.menu;
+                    if (d.orders) orders = d.orders;
+                    if (d.counter) orderCounter = d.counter;
+                }
+            } catch(e) {}
+            loadSettingsForm();
+        }
+        
+        function saveData() {
+            localStorage.setItem(STORE_KEY, JSON.stringify({
+                config, menu: menuData, orders, counter: orderCounter
+            }));
+        }
+        
+        // ============================================
+        // HEADER
+        // ============================================
         function updateHeaderDate() {
             const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('headerInfo').textContent = now.toLocaleDateString('id-ID', options);
+            const opts = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            document.getElementById('headerInfo').textContent = 
+                config.warung + ' • ' + now.toLocaleDateString('id-ID', opts);
         }
         
-        // Render menu
+        // ============================================
+        // MENU
+        // ============================================
         function renderMenu() {
-            const grid = document.getElementById('menuGrid');
-            const categories = ['Semua', 'Makanan', 'Minuman', 'Snack'];
+            const panel = document.getElementById('menuPanel');
+            const categories = [...new Set(menuData.map(m => m.cat))];
             
-            let filterTabs = '<div style="grid-column:1/-1;display:flex;gap:8px;margin-bottom:10px;overflow-x:auto">';
+            let html = '';
             categories.forEach(cat => {
-                filterTabs += `<div class="tab ${currentFilter === cat ? 'active' : ''}" onclick="filterMenu('${cat}')" style="padding:6px 12px;font-size:12px">${cat}</div>`;
+                const items = menuData.filter(m => m.cat === cat);
+                html += `<div class="category-header">${cat}</div>`;
+                html += '<div class="menu-grid">';
+                items.forEach(item => {
+                    html += `
+                        <div class="menu-item" onclick="addToCart(${item.id})">
+                            <div class="emoji">${item.emoji}</div>
+                            <div class="name">${item.name}</div>
+                            <div class="price">${fmtRp(item.price)}</div>
+                        </div>`;
+                });
+                html += '</div>';
             });
-            filterTabs += '</div>';
             
-            const filtered = currentFilter === 'Semua' ? MENU_DATA : MENU_DATA.filter(m => m.category === currentFilter);
-            
-            grid.innerHTML = filterTabs + filtered.map(item => `
-                <div class="menu-item" onclick="addToCart(${item.id})">
-                    <div class="emoji">${item.emoji}</div>
-                    <div class="name">${item.name}</div>
-                    <div class="price">${formatRp(item.price)}</div>
-                    <div class="stock">Stok: ${item.stock}</div>
-                </div>
-            `).join('');
+            panel.innerHTML = html;
         }
         
-        // Filter menu
-        function filterMenu(category) {
-            currentFilter = category;
-            renderMenu();
-        }
-        
-        // Set order type
-        function setOrderType(type) {
-            orderType = type;
-            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-        
-        // Add to cart
-        function addToCart(itemId) {
-            const item = MENU_DATA.find(m => m.id === itemId);
+        // ============================================
+        // CART
+        // ============================================
+        function addToCart(id) {
+            const item = menuData.find(m => m.id === id);
             if (!item) return;
             
-            const existing = cart.find(c => c.id === itemId);
+            const existing = cart.find(c => c.id === id);
             if (existing) {
                 existing.qty++;
             } else {
                 cart.push({ ...item, qty: 1 });
             }
             
+            // Haptic feedback
+            if (navigator.vibrate) navigator.vibrate(30);
+            
             renderCart();
+            showToast(`${item.emoji} ${item.name} ditambahkan`);
         }
         
-        // Render cart
         function renderCart() {
             const container = document.getElementById('cartItems');
+            const badge = document.getElementById('cartBadge');
+            const label = document.getElementById('cartLabel');
+            const totalEl = document.getElementById('cartTotal');
+            const btnPay = document.getElementById('btnPay');
+            const options = document.getElementById('cartOptions');
+            
+            const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            
+            badge.textContent = count;
+            totalEl.textContent = fmtRp(total);
             
             if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="cart-empty">
-                        <div class="icon">🛒</div>
-                        <p>Keranjang kosong</p>
-                    </div>
-                `;
-                document.getElementById('cartTotal').textContent = 'Rp 0';
-                document.getElementById('itemCount').textContent = '0 item';
-                document.getElementById('btnPay').disabled = true;
+                container.innerHTML = '<div class="cart-empty-msg">🛒 Keranjang kosong</div>';
+                label.textContent = 'Keranjang kosong';
+                btnPay.disabled = true;
+                options.style.display = 'none';
                 return;
             }
+            
+            label.textContent = `${count} item`;
+            btnPay.disabled = false;
+            options.style.display = 'flex';
             
             container.innerHTML = cart.map(item => `
                 <div class="cart-item">
                     <div class="info">
                         <div class="name">${item.emoji} ${item.name}</div>
-                        <div class="price">${formatRp(item.price)}</div>
+                        <div class="price">${fmtRp(item.price)}</div>
                     </div>
                     <div class="qty">
                         <button onclick="changeQty(${item.id}, -1)">−</button>
                         <span>${item.qty}</span>
                         <button onclick="changeQty(${item.id}, 1)">+</button>
                     </div>
-                    <div class="subtotal">${formatRp(item.price * item.qty)}</div>
+                    <div class="subtotal">${fmtRp(item.price * item.qty)}</div>
                 </div>
             `).join('');
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            
-            document.getElementById('cartTotal').textContent = formatRp(total);
-            document.getElementById('itemCount').textContent = `${itemCount} item`;
-            document.getElementById('btnPay').disabled = false;
         }
         
-        // Change quantity
-        function changeQty(itemId, delta) {
-            const item = cart.find(c => c.id === itemId);
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
             if (!item) return;
-            
             item.qty += delta;
-            if (item.qty <= 0) {
-                cart = cart.filter(c => c.id !== itemId);
-            }
-            
+            if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
             renderCart();
         }
         
-        // Clear cart
         function clearCart() {
             cart = [];
             renderCart();
+            toggleCart(false);
         }
         
-        // Show payment modal
+        function toggleCart(force) {
+            const sheet = document.getElementById('cartSheet');
+            const overlay = document.getElementById('cartOverlay');
+            
+            if (force !== undefined) {
+                cartExpanded = force;
+            } else {
+                cartExpanded = !cartExpanded;
+            }
+            
+            sheet.classList.toggle('expanded', cartExpanded);
+            sheet.classList.toggle('minimized', !cartExpanded);
+            overlay.classList.toggle('show', cartExpanded);
+        }
+        
+        // ============================================
+        // ORDER TYPE
+        // ============================================
+        function setOrderType(type, el) {
+            orderType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+        
+        // ============================================
+        // PANELS
+        // ============================================
+        function showPanel(panel, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            
+            document.getElementById('menuPanel').style.display = panel === 'menu' ? 'block' : 'none';
+            document.getElementById('ordersPanel').classList.toggle('show', panel === 'orders');
+            
+            if (panel === 'orders') renderOrders();
+        }
+        
+        // ============================================
+        // PAYMENT
+        // ============================================
         function showPayment() {
             if (cart.length === 0) return;
             
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const tax = Math.round(subtotal * config.tax / 100);
+            const total = subtotal + tax;
+            const count = cart.reduce((s, i) => s + i.qty, 0);
             
-            document.getElementById('paySummary').innerHTML = `
-                <div class="pay-row"><span>${itemCount} item</span><span>${formatRp(total)}</span></div>
-                <div class="pay-row total"><span>TOTAL</span><span>${formatRp(total)}</span></div>
-            `;
+            let summaryHtml = `<div class="pay-row"><span>${count} item</span><span>${fmtRp(subtotal)}</span></div>`;
+            if (config.tax > 0) {
+                summaryHtml += `<div class="pay-row"><span>Pajak (${config.tax}%)</span><span>${fmtRp(tax)}</span></div>`;
+            }
+            summaryHtml += `<div class="pay-row total"><span>TOTAL</span><span>${fmtRp(total)}</span></div>`;
             
+            document.getElementById('paySummary').innerHTML = summaryHtml;
             document.getElementById('payAmount').value = '';
             document.getElementById('payChange').style.display = 'none';
             document.getElementById('paymentModal').classList.add('show');
+            
+            setTimeout(() => document.getElementById('payAmount').focus(), 300);
         }
         
-        // Set payment amount
         function setPay(amount) {
             document.getElementById('payAmount').value = amount;
             calcChange();
         }
         
-        // Set exact payment
         function setPayExact() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const total = subtotal + Math.round(subtotal * config.tax / 100);
             document.getElementById('payAmount').value = total;
             calcChange();
         }
         
-        // Calculate change
         function calcChange() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const total = subtotal + Math.round(subtotal * config.tax / 100);
             const paid = Number(document.getElementById('payAmount').value) || 0;
             const change = paid - total;
             
+            const changeEl = document.getElementById('payChange');
             if (change >= 0 && paid > 0) {
-                document.getElementById('payChange').style.display = 'block';
-                document.getElementById('changeAmount').textContent = formatRp(change);
+                changeEl.style.display = 'block';
+                document.getElementById('changeAmount').textContent = fmtRp(change);
             } else {
-                document.getElementById('payChange').style.display = 'none';
+                changeEl.style.display = 'none';
             }
         }
         
-        // Confirm payment
-        async function confirmPay() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        function confirmPay() {
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const tax = Math.round(subtotal * config.tax / 100);
+            const total = subtotal + tax;
             const paid = Number(document.getElementById('payAmount').value) || 0;
             
             if (paid < total) {
@@ -485,50 +621,75 @@
                 type: orderType,
                 table: document.getElementById('tableNum').value || '-',
                 note: document.getElementById('orderNote').value || '',
-                items: [...cart],
-                total: total,
-                paid: paid,
-                change: paid - total,
+                items: cart.map(i => ({ ...i })),
+                subtotal, tax, total,
+                paid, change: paid - total,
                 status: 'pending',
                 time: new Date().toISOString()
             };
             
-            // Save to Google Sheets
-            try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'addOrder', order })
-                });
-            } catch (err) {
-                console.log('Offline mode, saving locally');
-            }
-            
             orders.unshift(order);
-            saveOrders();
+            saveData();
             
-            // Reset
+            // Show receipt
+            showReceipt(order);
+            
+            // Reset cart
             cart = [];
             renderCart();
+            toggleCart(false);
             closeModal('paymentModal');
             document.getElementById('tableNum').value = '';
             document.getElementById('orderNote').value = '';
             
-            showToast(`✅ Pesanan ${order.id} berhasil!`);
+            showToast(`✅ ${order.id} berhasil!`);
             updateOrderCount();
         }
         
-        // Show panel
-        function showPanel(panel) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+        // ============================================
+        // RECEIPT
+        // ============================================
+        function showReceipt(order) {
+            const d = new Date(order.time);
+            let html = `
+                <div class="receipt">
+                    <div class="r-header">${config.warung}</div>
+                    ${config.alamat ? `<div style="text-align:center;font-size:11px;color:#6b7280">${config.alamat}</div>` : ''}
+                    ${config.phone ? `<div style="text-align:center;font-size:11px;color:#6b7280">WA: ${config.phone}</div>` : ''}
+                    <div class="r-divider"></div>
+                    <div style="font-size:11px;color:#6b7280">
+                        ${order.id} • ${d.toLocaleDateString('id-ID')} ${d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}
+                        ${order.table !== '-' ? ` • Meja ${order.table}` : ''}
+                    </div>
+                    <div class="r-divider"></div>`;
             
-            document.getElementById('menuPanel').style.display = panel === 'menu' ? 'block' : 'none';
-            document.getElementById('ordersPanel').classList.toggle('show', panel === 'orders');
+            order.items.forEach(i => {
+                html += `
+                    <div class="r-line">
+                        <span>${i.emoji} ${i.name} x${i.qty}</span>
+                        <span>${fmtRp(i.price * i.qty)}</span>
+                    </div>`;
+            });
             
-            if (panel === 'orders') renderOrders();
+            html += `<div class="r-divider"></div>`;
+            html += `<div class="r-line"><span>Subtotal</span><span>${fmtRp(order.subtotal)}</span></div>`;
+            if (order.tax > 0) {
+                html += `<div class="r-line"><span>Pajak</span><span>${fmtRp(order.tax)}</span></div>`;
+            }
+            html += `<div class="r-line r-total"><span>TOTAL</span><span>${fmtRp(order.total)}</span></div>`;
+            html += `<div class="r-line"><span>Tunai</span><span>${fmtRp(order.paid)}</span></div>`;
+            html += `<div class="r-line"><span>Kembali</span><span>${fmtRp(order.change)}</span></div>`;
+            html += `<div class="r-divider"></div>`;
+            html += `<div class="r-footer">Terima kasih! 🙏</div>`;
+            html += `</div>`;
+            
+            document.getElementById('receiptContent').innerHTML = html;
+            document.getElementById('receiptModal').classList.add('show');
         }
         
-        // Render orders
+        // ============================================
+        // ORDERS
+        // ============================================
         function renderOrders() {
             const container = document.getElementById('ordersPanel');
             
@@ -536,73 +697,68 @@
                 container.innerHTML = `
                     <div style="text-align:center;padding:40px;color:#9ca3af">
                         <div style="font-size:40px">📋</div>
-                        <p>Belum ada pesanan</p>
-                    </div>
-                `;
+                        <p style="margin-top:8px">Belum ada pesanan</p>
+                    </div>`;
                 return;
             }
             
-            container.innerHTML = orders.map(order => `
+            container.innerHTML = orders.slice(0, 50).map(o => {
+                const d = new Date(o.time);
+                return `
                 <div class="order-card">
                     <div class="order-header">
-                        <span class="order-id">${order.id}</span>
-                        <span class="order-badge badge-${order.status}">${getStatusText(order.status)}</span>
+                        <span class="order-id">${o.id}</span>
+                        <span class="order-badge badge-${o.status}">${statusText(o.status)}</span>
                     </div>
                     <div class="order-info">
-                        ${getTypeEmoji(order.type)} ${getTypeText(order.type)} ${order.table !== '-' ? `• Meja ${order.table}` : ''}
-                        ${order.note ? `• ${order.note}` : ''}
+                        ${typeEmoji(o.type)} ${typeText(o.type)} ${o.table !== '-' ? `• Meja ${o.table}` : ''}
+                        • ${d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}
+                        ${o.note ? ` • ${o.note}` : ''}
                     </div>
-                    <div class="order-items">
-                        ${order.items.map(i => `${i.emoji} ${i.name} x${i.qty}`).join(', ')}
-                    </div>
-                    <div class="order-total">${formatRp(order.total)}</div>
+                    <div class="order-items">${o.items.map(i => `${i.emoji}${i.name} x${i.qty}`).join(', ')}</div>
+                    <div class="order-total">${fmtRp(o.total)}</div>
                     <div class="order-actions">
-                        ${order.status === 'pending' ? `<button class="btn-ready" onclick="updateStatus('${order.id}', 'ready')">✅ Siap</button>` : ''}
-                        ${order.status === 'ready' ? `<button class="btn-done" onclick="updateStatus('${order.id}', 'done')">📦 Selesai</button>` : ''}
-                        ${order.status !== 'done' ? `<button class="btn-cancel" onclick="updateStatus('${order.id}', 'cancelled')">❌ Batal</button>` : ''}
+                        ${o.status === 'pending' ? `<button class="btn-ready" onclick="updateStatus('${o.id}','ready')">✅ Siap</button>` : ''}
+                        ${o.status === 'ready' ? `<button class="btn-done" onclick="updateStatus('${o.id}','done')">📦 Selesai</button>` : ''}
+                        ${o.status !== 'done' ? `<button class="btn-cancel" onclick="updateStatus('${o.id}','cancelled')">❌ Batal</button>` : ''}
+                        <button onclick="showReceipt(orders.find(x=>x.id==='${o.id}'))" style="flex:0.5;background:#f3f4f6;border:none;border-radius:8px;padding:8px;cursor:pointer">🧾</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
         
-        // Update order status
-        function updateStatus(orderId, status) {
-            const order = orders.find(o => o.id === orderId);
+        function updateStatus(id, status) {
+            const order = orders.find(o => o.id === id);
             if (order) {
                 order.status = status;
-                saveOrders();
+                saveData();
                 renderOrders();
                 updateOrderCount();
-                showToast(`✅ ${orderId} → ${getStatusText(status)}`);
+                showToast(`${id} → ${statusText(status)}`);
             }
         }
         
-        // Show report
+        function updateOrderCount() {
+            const active = orders.filter(o => o.status === 'pending' || o.status === 'ready').length;
+            document.getElementById('orderCount').textContent = active;
+        }
+        
+        // ============================================
+        // REPORT
+        // ============================================
         function showReport() {
             const today = new Date().toISOString().split('T')[0];
             const todayOrders = orders.filter(o => o.time.startsWith(today) && o.status !== 'cancelled');
             
-            const totalIncome = todayOrders.reduce((sum, o) => sum + o.total, 0);
-            const totalItems = todayOrders.reduce((sum, o) => sum + o.items.reduce((s, i) => s + i.qty, 0), 0);
+            const totalIncome = todayOrders.reduce((s, o) => s + o.total, 0);
+            const totalItems = todayOrders.reduce((s, o) => s + o.items.reduce((a, i) => a + i.qty, 0), 0);
+            const avgOrder = todayOrders.length > 0 ? Math.round(totalIncome / todayOrders.length) : 0;
             
             document.getElementById('reportStats').innerHTML = `
-                <div class="stat-card income">
-                    <div class="label">Omzet</div>
-                    <div class="value">${formatRp(totalIncome)}</div>
-                </div>
-                <div class="stat-card orders">
-                    <div class="label">Pesanan</div>
-                    <div class="value">${todayOrders.length}</div>
-                </div>
-                <div class="stat-card items">
-                    <div class="label">Item Terjual</div>
-                    <div class="value">${totalItems}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Rata-rata</div>
-                    <div class="value">${todayOrders.length > 0 ? formatRp(Math.round(totalIncome / todayOrders.length)) : 'Rp 0'}</div>
-                </div>
-            `;
+                <div class="stat-card income"><div class="label">💰 Omzet</div><div class="value">${fmtRp(totalIncome)}</div></div>
+                <div class="stat-card orders"><div class="label">📋 Pesanan</div><div class="value">${todayOrders.length}</div></div>
+                <div class="stat-card items"><div class="label">📦 Item Terjual</div><div class="value">${totalItems}</div></div>
+                <div class="stat-card"><div class="label">📊 Rata-rata</div><div class="value">${fmtRp(avgOrder)}</div></div>`;
             
             document.getElementById('reportOrders').innerHTML = todayOrders.slice(0, 10).map(o => `
                 <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:13px">
@@ -610,60 +766,75 @@
                         <div style="font-weight:600">${o.id}</div>
                         <div style="color:#9ca3af;font-size:11px">${new Date(o.time).toLocaleTimeString('id-ID')}</div>
                     </div>
-                    <div style="font-weight:600;color:#1e40af">${formatRp(o.total)}</div>
+                    <div style="font-weight:600;color:#1e40af">${fmtRp(o.total)}</div>
                 </div>
             `).join('') || '<p style="color:#9ca3af;text-align:center">Belum ada transaksi</p>';
             
             document.getElementById('reportModal').classList.add('show');
         }
         
-        // Close modal
+        // ============================================
+        // SETTINGS
+        // ============================================
+        function showSettings() {
+            loadSettingsForm();
+            document.getElementById('settingsModal').classList.add('show');
+        }
+        
+        function loadSettingsForm() {
+            document.getElementById('setWarung').value = config.warung || '';
+            document.getElementById('setAlamat').value = config.alamat || '';
+            document.getElementById('setPhone').value = config.phone || '';
+            document.getElementById('setTax').value = config.tax || 0;
+        }
+        
+        function saveSettings() {
+            config.warung = document.getElementById('setWarung').value || 'Warung';
+            config.alamat = document.getElementById('setAlamat').value || '';
+            config.phone = document.getElementById('setPhone').value || '';
+            config.tax = Number(document.getElementById('setTax').value) || 0;
+            saveData();
+            updateHeaderDate();
+            closeModal('settingsModal');
+            showToast('✅ Pengaturan disimpan');
+        }
+        
+        // ============================================
+        // HELPERS
+        // ============================================
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
         
-        // Helpers
-        function formatRp(num) {
-            return 'Rp ' + num.toLocaleString('id-ID');
+        function fmtRp(n) {
+            return 'Rp ' + Number(n).toLocaleString('id-ID');
         }
         
-        function getStatusText(status) {
-            return { pending: '⏳ Pending', ready: '✅ Siap', done: '📦 Selesai', cancelled: '❌ Batal' }[status] || status;
+        function statusText(s) {
+            return { pending: '⏳ Pending', ready: '✅ Siap', done: '📦 Selesai', cancelled: '❌ Batal' }[s] || s;
         }
         
-        function getTypeText(type) {
-            return { dine_in: 'Dine In', take_away: 'Take Away', delivery: 'Delivery' }[type] || type;
+        function typeText(t) {
+            return { dine_in: 'Dine In', take_away: 'Bungkus', delivery: 'Delivery' }[t] || t;
         }
         
-        function getTypeEmoji(type) {
-            return { dine_in: '🪑', take_away: '📦', delivery: '🛵' }[type] || '📋';
-        }
-        
-        function updateOrderCount() {
-            const pending = orders.filter(o => o.status === 'pending' || o.status === 'ready').length;
-            document.getElementById('orderCount').textContent = pending;
+        function typeEmoji(t) {
+            return { dine_in: '🪑', take_away: '📦', delivery: '🛵' }[t] || '📋';
         }
         
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            setTimeout(() => toast.style.display = 'none', 2000);
         }
         
-        // Local storage
-        function saveOrders() {
-            localStorage.setItem('kasirku_orders', JSON.stringify(orders));
-            localStorage.setItem('kasirku_counter', orderCounter);
-        }
-        
-        function loadOrders() {
-            const saved = localStorage.getItem('kasirku_orders');
-            if (saved) orders = JSON.parse(saved);
-            const counter = localStorage.getItem('kasirku_counter');
-            if (counter) orderCounter = Number(counter);
-            updateOrderCount();
-        }
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) overlay.classList.remove('show');
+            });
+        });
     </script>
 </body>
 </html>
