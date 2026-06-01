@@ -1,74 +1,51 @@
-# 🏪 KasirKu - POS Warung & Restoran
+# 🏪 KasirKu POS - All-in-One Google Apps Script
 
 Aplikasi kasir (POS) sederhana buat warung, restoran, dan UMKM Indonesia.
-**100% GRATIS** - pakai Google Sheets sebagai database.
+**100% GRATIS** - semua di Google Apps Script + Google Sheets.
 
 ## Fitur
-- ✅ Menu dengan kategori (Makanan, Minuman, Snack)
-- ✅ Order type (Dine In, Take Away, Delivery)
+- ✅ Menu dengan emoji & kategori
+- ✅ Dine In / Take Away / Delivery
 - ✅ Input meja & catatan
-- ✅ Keranjang dengan +/- quantity
-- ✅ Pembayaran dengan kembalian
+- ✅ Keranjang +/- quantity
+- ✅ Pembayaran + kembalian
 - ✅ Status pesanan (Pending → Siap → Selesai)
-- ✅ Laporan harian (omzet, pesanan, item terjual)
-- ✅ Export data
-- ✅ Mobile-friendly (bisa dipakai di HP)
-- ✅ Offline mode (data tersimpan lokal)
+- ✅ Laporan harian (omzet, pesanan)
+- ✅ Mobile-friendly
+- ✅ Offline backup (localStorage)
 
-## Cara Setup (5 menit)
+## Cara Setup (3 menit!)
 
 ### 1. Buat Google Sheet
 - Buka [sheets.new](https://sheets.new)
-- Kasih nama: "KasirKu Data"
+- Kasih nama: **"KasirKu"**
 
-### 2. Buat Apps Script
+### 2. Buka Apps Script
 - Klik **Extensions** → **Apps Script**
-- Hapus kode default, copy-paste isi `Code.gs`
+
+### 3. Copy Kode
+- Hapus semua kode di Code.gs
+- Copy-paste isi `Code.gs` dari repo ini
 - Klik **Save** (💾)
 
-### 3. Deploy sebagai Web App
+### 4. Deploy
 - Klik **Deploy** → **New Deployment**
 - Klik gear ⚙️ → **Web App**
 - Isi:
-  - **Description:** "KasirKu API"
-  - **Execute as:** **Me**
-  - **Who has access:** **Anyone**
+  - Description: "KasirKu POS"
+  - Execute as: **Me**
+  - Who has access: **Anyone**
 - Klik **Deploy**
 - **Copy URL** yang muncul
 
-### 4. Update Frontend
-- Buka `index.html`
-- Cari baris: `const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE'`
-- Ganti dengan URL dari step 3
-- Simpan
-
-### 5. Hosting Frontend (gratis)
-Pilih salah satu:
-
-**Option A: Vercel (paling gampang)**
-1. Buka [vercel.com](https://vercel.com)
-2. Login dengan GitHub
-3. Upload `index.html`
-4. Dapat URL langsung
-
-**Option B: Netlify**
-1. Buka [netlify.com](https://netlify.com)
-2. Drag-drop folder `pos-app`
-3. Dapat URL langsung
-
-**Option C: GitHub Pages**
-1. Upload ke GitHub
-2. Settings → Pages → Deploy from branch
-3. Dapat URL: `username.github.io/pos-app`
+### 5. Buka di HP
+- Paste URL di browser HP
+- Bookmark biar gampang diakses
+- Done! 🎉
 
 ## Cara Pakai
 
-### Tambah Menu
-1. Buka Google Sheet "KasirKu Data"
-2. Tab "Menu"
-3. Tambah row baru: ID, Nama, Emoji, Harga, Kategori, Stok, Aktif
-
-### Proses Pesanan
+### Tambah Pesanan
 1. Pilih menu (klik item)
 2. Atur quantity (+/-)
 3. Pilih tipe (Dine In/Take Away/Delivery)
@@ -79,94 +56,65 @@ Pilih salah satu:
 
 ### Lihat Pesanan
 - Klik tab **📋 Pesanan**
-- Lihat status: Pending ⏳ → Siap ✅ → Selesai 📦
-- Klik tombol untuk update status
+- Update status: Pending → Siap → Selesai
 
 ### Lihat Laporan
-- Klik tombol **📊 Laporan** di header
-- Lihat omzet, pesanan, item terjual
-- Lihat transaksi terakhir
+- Klik **📊 Laporan** di header
+- Lihat omzet, pesanan, rata-rata
 
-## Kategori Menu
+## Edit Menu
 
-| Kategori | Contoh |
-|----------|--------|
-| Makanan | Nasi Goreng, Mie Ayam, Bakso |
-| Minuman | Es Teh, Kopi, Jus |
-| Snack | Roti Bakar, Pisang Goreng |
-
-## Custom Menu
-
-Edit di Google Sheet "Menu":
+Buka Google Sheet "KasirKu" → Tab "Menu":
 
 | ID | Nama | Emoji | Harga | Kategori | Stok | Aktif |
 |----|------|-------|-------|----------|------|-------|
 | 1 | Nasi Goreng | 🍚 | 15000 | Makanan | 99 | TRUE |
-| 2 | Es Teh | 🧊 | 5000 | Minuman | 99 | TRUE |
 
-## Tips Buat Warung
+- Tambah row baru untuk menu baru
+- Set Aktif = FALSE untuk sembunyikan menu
+- Stok otomatis berkurang setiap pesanan
 
-### Setup Awal
-1. Edit menu sesuai jualan
-2. Hapus menu yang gak ada
-3. Tambah menu baru
+## Tips
 
-### Operasional Harian
-1. Buka app di HP/kasir
-2. Input pesanan pelanggan
-3. Cetak struk (opsional)
-4. Tutup shift → lihat laporan
+### Untuk Warung
+- Edit menu sesuai jualan
+- Pakai HP sebagai kasir
+- Cek laporan setiap malam
 
-### Monitoring
-1. Cek laporan harian
-2. Lihat menu paling laku
-3. Stok otomatis berkurang
+### Untuk Restoran
+- Tambah nomor meja
+- Gunakan catatan untuk request khusus
+- Monitor pesanan real-time
+
+### Backup Data
+- Data tersimpan di Google Sheets
+- Buka Sheets langsung untuk export
+- Local storage sebagai backup offline
 
 ## Troubleshooting
 
-### "Gagal memuat data"
-- Cek URL API_URL di index.html
-- Pastikan Apps Script di-deploy sebagai "Anyone"
+### "Gagal memuat menu"
+- Pastikan Google Sheet bernama "KasirKu"
+- Cek ada tab "Menu" dengan header yang benar
 
 ### "Error koneksi"
 - Cek internet
-- Coba buka Google Sheet langsung
+- Refresh halaman
 
-### Menu gak muncul
-- Pastikan sheet bernama "Menu"
-- Cek ada header row
+### Pesanan gak tersimpan
+- Cek Apps Script sudah di-deploy
+- Pastikan "Who has access: Anyone"
 
-## Upgrade (Opsional)
+## Upgrade
 
-### Struk Printer
-- Tambah tombol "Cetak Struk"
-- Pakai library thermal printer
+### Custom Menu
+Edit langsung di Google Sheet
 
-### Multi-kasir
-- Buka di beberapa HP
-- Data sync via Google Sheets
+### Multi-device
+Buka URL yang sama di beberapa HP
 
-### Laporan PDF
-- Export laporan ke PDF
-- Kirim ke WhatsApp owner
-
-### Integrasi GoFood/Grab
-- Auto-import pesanan online
-- Label "Online" di order
-
-## Monetisasi
-
-### Model 1: Freemium
-- **Gratis:** 100 pesanan/bulan
-- **Premium:** Unlimited = Rp 50rb/bulan
-
-### Model 2: Jual ke Warung
-- Setup + training = Rp 200rb
-- Support bulanan = Rp 50rb/bulan
-
-### Model 3: SaaS
-- Host sendiri = Rp 100rb/bulan per warung
-- Include domain custom
+### Laporan Bulanan
+Buka Google Sheet → Filter berdasarkan bulan
 
 ---
 
