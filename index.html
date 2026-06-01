@@ -23,6 +23,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .splash h1{color:#fff;font-size:32px;font-weight:800;margin-top:20px}
 .splash p{color:rgba(255,255,255,.75);font-size:14px;margin-top:4px}
 @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+/* LOCK SCREEN */
+.lock{position:fixed;inset:0;background:var(--pg);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s,visibility .4s}
+.lock.hide{opacity:0;visibility:hidden;pointer-events:none}
+.lock .logo{font-size:56px;margin-bottom:16px}
+.lock h2{color:#fff;font-size:24px;font-weight:800;margin-bottom:4px}
+.lock p{color:rgba(255,255,255,.7);font-size:13px;margin-bottom:24px}
+.lock .pin-display{display:flex;gap:12px;margin-bottom:20px}
+.lock .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.5);transition:all .2s}
+.lock .pin-dot.filled{background:#fff;border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,.5)}
+.lock .pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:280px;width:100%}
+.lock .pin-btn{width:70px;height:70px;border-radius:20px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .15s;font-family:inherit}
+.lock .pin-btn:active{background:rgba(255,255,255,.3);transform:scale(.92)}
+.lock .pin-btn.fn{font-size:14px;font-weight:600;background:transparent}
+.lock .pin-btn.fn:active{background:rgba(255,255,255,.15)}
+.lock .err{color:#FF6B6B;font-size:12px;font-weight:600;min-height:18px;margin-top:8px;transition:all .2s}
+.lock .setup-msg{color:rgba(255,255,255,.8);font-size:12px;text-align:center;margin-top:12px;max-width:260px;line-height:1.5}
+.lock-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .hdr{background:var(--pg);color:#fff;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0));display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
 .hdr h1{font-size:19px;font-weight:800}
 .hdr .inf{font-size:11px;opacity:.8;margin-top:2px}
@@ -242,6 +259,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </style>
 </head>
 <body>
+<!-- LOCK SCREEN -->
+<div class="lock" id="lockScr">
+<div class="logo">🏪</div>
+<h2>KasirKu</h2>
+<p id="lockSub">Masukkan PIN untuk membuka</p>
+<div class="pin-display">
+<div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div><div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+</div>
+<div class="pin-grid">
+<button class="pin-btn" onclick="pinIn(1)">1</button><button class="pin-btn" onclick="pinIn(2)">2</button><button class="pin-btn" onclick="pinIn(3)">3</button>
+<button class="pin-btn" onclick="pinIn(4)">4</button><button class="pin-btn" onclick="pinIn(5)">5</button><button class="pin-btn" onclick="pinIn(6)">6</button>
+<button class="pin-btn" onclick="pinIn(7)">7</button><button class="pin-btn" onclick="pinIn(8)">8</button><button class="pin-btn" onclick="pinIn(9)">9</button>
+<button class="pin-btn fn" onclick="pinClear()">⌫ Hapus</button><button class="pin-btn" onclick="pinIn(0)">0</button><button class="pin-btn fn" onclick="pinEnter()">OK</button>
+</div>
+<div class="err" id="pinErr"></div>
+<div class="setup-msg" id="setupMsg"></div>
+</div>
+
 <div class="splash" id="splash"><div class="lw"><span>🏪</span></div><h1>KasirKu</h1><p>Point of Sale Warung</p></div>
 
 <!-- HEADER -->
@@ -253,6 +288,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <button class="bi" onclick="showReport()">📈</button>
 <button class="bi" onclick="showMenuEditor()">✏️</button>
 <button class="bi" onclick="showSettings()">⚙️</button>
+<button class="lock-btn" onclick="lockApp()">🔒</button>
 </div>
 </div>
 
@@ -391,6 +427,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="sg"><label>🔢 Nomor Awal Invoice</label><input type="number" id="sn" placeholder="1" min="1"></div>
 <div class="sg"><label>🖨️ Printer (Bluetooth)</label><button class="bsv" style="font-size:13px;padding:10px" onclick="connectPrinter()">🔗 Hubungkan Printer</button><div id="printerStatus" style="font-size:11px;color:var(--t2);margin-top:4px">Belum terhubung</div></div>
 <div class="dm-toggle"><span>🌙 Dark Mode</span><div class="sw" id="dmSw" onclick="toggleDark()"></div></div>
+<div class="sg"><label>🔐 PIN Aplikasi</label><input type="password" id="sAppPin" placeholder="PIN untuk buka app" maxlength="4"></div>
 <div class="sg"><label>👤 Login Kasir (PIN)</label><input type="password" id="sPin" placeholder="4 digit PIN" maxlength="4"></div>
 <button class="bsv" onclick="sStg()">💾 Simpan</button>
 <div style="height:10px"></div>
@@ -481,9 +518,99 @@ let menu=[
 ];
 let orders=[],oType='dine_in',oCtr=1;
 
+// ====== LOCK SCREEN ======
+let pinCode='';
+let pinMode='verify'; // 'verify' or 'setup' or 'setup2'
+let setupPin1='';
+function initLock(){
+const appPin=cfg.appPin||'';
+if(!appPin){
+// First time - setup PIN
+pinMode='setup';
+document.getElementById('lockSub').textContent='Buat PIN baru (4 digit)';
+document.getElementById('setupMsg').textContent='Pertama kali? Buat PIN untuk mengamankan aplikasi Anda.';
+document.getElementById('lockScr').classList.remove('hide');
+}else{
+pinMode='verify';
+document.getElementById('lockSub').textContent='Masukkan PIN untuk membuka';
+document.getElementById('setupMsg').textContent='';
+document.getElementById('lockScr').classList.remove('hide');
+}
+}
+function pinIn(n){
+if(pinCode.length>=4)return;
+pinCode+=n;
+updatePinDots();
+if(pinCode.length===4){
+setTimeout(pinEnter,200);
+}
+}
+function pinClear(){
+pinCode=pinCode.slice(0,-1);
+updatePinDots();
+document.getElementById('pinErr').textContent='';
+}
+function updatePinDots(){
+for(let i=0;i<4;i++){
+document.getElementById('d'+i).classList.toggle('filled',i<pinCode.length);
+}
+}
+function pinEnter(){
+if(pinCode.length<4){document.getElementById('pinErr').textContent='Masukkan 4 digit';return;}
+if(pinMode==='verify'){
+if(pinCode===cfg.appPin){
+// Correct PIN
+document.getElementById('lockScr').classList.add('hide');
+document.getElementById('pinErr').textContent='';
+pinCode='';
+}else{
+document.getElementById('pinErr').textContent='❌ PIN salah!';
+pinCode='';
+updatePinDots();
+// Vibrate on error
+if(navigator.vibrate)navigator.vibrate([100,50,100]);
+}
+}else if(pinMode==='setup'){
+setupPin1=pinCode;
+pinCode='';
+updatePinDots();
+pinMode='setup2';
+document.getElementById('lockSub').textContent='Ulangi PIN sekali lagi';
+document.getElementById('pinErr').textContent='';
+document.getElementById('setupMsg').textContent='';
+}else if(pinMode==='setup2'){
+if(pinCode===setupPin1){
+cfg.appPin=pinCode;
+svData();
+document.getElementById('lockScr').classList.add('hide');
+document.getElementById('pinErr').textContent='';
+pinCode='';
+tst('✅ PIN berhasil dibuat!');
+}else{
+document.getElementById('pinErr').textContent='❌ PIN tidak cocok!';
+pinCode='';
+setupPin1='';
+pinMode='setup';
+updatePinDots();
+document.getElementById('lockSub').textContent='Buat PIN baru (4 digit)';
+if(navigator.vibrate)navigator.vibrate([100,50,100]);
+}
+}
+}
+function lockApp(){
+pinCode='';
+updatePinDots();
+document.getElementById('pinErr').textContent='';
+pinMode='verify';
+document.getElementById('lockSub').textContent='Masukkan PIN untuk membuka';
+document.getElementById('setupMsg').textContent='';
+document.getElementById('lockScr').classList.remove('hide');
+}
+
 // ====== INIT ======
 document.addEventListener('DOMContentLoaded',()=>{
 ldData();uDate();rMenu();rCart();rCats();uCt();
+initLock();
 setTimeout(()=>document.getElementById('splash').classList.add('hide'),1200);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 if(cfg.dark){document.documentElement.setAttribute('data-theme','dark');document.getElementById('dmSw').classList.add('on');}
@@ -828,8 +955,8 @@ function dI(id){if(!confirm('Hapus?'))return;menu=menu.filter(m=>m.id!==id);cart
 
 // ====== SETTINGS ======
 function showSettings(){ldSF();document.getElementById('smo').classList.add('show');}
-function ldSF(){document.getElementById('sw').value=cfg.warung||'';document.getElementById('sa').value=cfg.alamat||'';document.getElementById('sp').value=cfg.phone||'';document.getElementById('sc').value=cfg.currency||'Rp';document.getElementById('stx').value=cfg.tax||0;document.getElementById('sn').value=oCtr||1;document.getElementById('sPin').value=cfg.pin||'';}
-function sStg(){cfg.warung=document.getElementById('sw').value||'Warung';cfg.alamat=document.getElementById('sa').value;cfg.phone=document.getElementById('sp').value;cfg.currency=document.getElementById('sc').value;cfg.tax=Number(document.getElementById('stx').value)||0;oCtr=Number(document.getElementById('sn').value)||1;cfg.pin=document.getElementById('sPin').value;svData();uDate();cMod('smo');tst('✅ Disimpan');}
+function ldSF(){document.getElementById('sw').value=cfg.warung||'';document.getElementById('sa').value=cfg.alamat||'';document.getElementById('sp').value=cfg.phone||'';document.getElementById('sc').value=cfg.currency||'Rp';document.getElementById('stx').value=cfg.tax||0;document.getElementById('sn').value=oCtr||1;document.getElementById('sPin').value=cfg.pin||'';document.getElementById('sAppPin').value=cfg.appPin||'';}
+function sStg(){cfg.warung=document.getElementById('sw').value||'Warung';cfg.alamat=document.getElementById('sa').value;cfg.phone=document.getElementById('sp').value;cfg.currency=document.getElementById('sc').value;cfg.tax=Number(document.getElementById('stx').value)||0;oCtr=Number(document.getElementById('sn').value)||1;cfg.pin=document.getElementById('sPin').value;cfg.appPin=document.getElementById('sAppPin').value;svData();uDate();cMod('smo');tst('✅ Disimpan');}
 function rAll(){if(!confirm('⚠️ Hapus SEMUA data?'))return;localStorage.removeItem(SK);location.reload();}
 
 // ====== HELPERS ======
