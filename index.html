@@ -660,7 +660,7 @@ const o={id:`ORD-${String(oCtr++).padStart(4,'0')}`,type:oType,method:pm,table:d
 cart.forEach(c=>{const m=menu.find(x=>x.id===c.id);if(m){if(m.stock>0)m.stock-=c.qty;m.sold=(m.sold||0)+c.qty;}});
 
 // Update customer stats
-const cust=customers.find(c=>c.id===1);if(cust){cust.totalBeli+=tot;kunjungan++;}
+const cust=customers.find(c=>c.id===1);if(cust){cust.totalBeli+=tot;cust.kunjungan++;}
 
 // Piutang
 if(pm==='piutang'){
